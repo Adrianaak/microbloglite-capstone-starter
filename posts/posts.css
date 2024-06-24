@@ -1,1 +1,14 @@
 /* Posts Page CSS */
+
+
+body {
+    display: flex;
+    flex-direction: column;
+}
+
+footer {
+    background-color: #f0f0f0;
+    padding: 10px 0;
+    text-align: center;
+    width: 100%;
+}
