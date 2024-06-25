@@ -8,6 +8,16 @@ const api = "http://microbloglite.us-east-2.elasticbeanstalk.com";
 
 window.onload = () => {
     getAllPosts();
+    let logoutButton = document.querySelector("#logoutButton")
+
+    logoutButton.addEventListener("click", logoutUser);
+}
+
+function logoutUser(event) {
+    event.preventDefault();
+    logout();
+
+
 }
 
 // Function to get all posts via fetch()
@@ -30,7 +40,7 @@ function getAllPosts() {
         .then(posts => {
             // Do something with the posts array...
             console.log(posts);
-            // Example: displayPosts(posts);
+            displayPosts(posts);
         })
         .catch(error => {
             console.error('Error fetching posts:', error);
@@ -40,48 +50,23 @@ function getAllPosts() {
 }
 
 const displayPosts = (posts) => {
-    let postsContainer = document.getElementById('postsContainer');
-    if (postsContainer) {
-        // Clear existing content
-        postsContainer.innerHTML = '';
+    let postsTableBody = document.getElementById('postsTableBody');
 
-        // Create table element
-        let table = document.createElement('table');
-        table.classList.add('table', 'table-striped');
+    // Clear existing content
+    postsTableBody.innerHTML = '';
 
-        // Create table header row
-        let headerRow = document.createElement('thead');
-        headerRow.innerHTML = `
-            <tr>
-                <th>ID</th>
-                <th>Post ID</th>
-                <th>Username</th>
-                <th>Created At</th>
-            </tr>
-        `;
-        table.appendChild(headerRow);
 
-        // Create table body
-        let tableBody = document.createElement('tbody');
-        posts.forEach(post => {
-            let row = document.createElement('tr');
-            row.innerHTML = `
-                <td>${post.id}</td>
-                <td>${post.postId}</td>
+    posts.forEach(post => {
+        let row = postsTableBody.insertRow();
+        row.innerHTML = `
+                <td>${post._id}</td>
+                <td>${post.text}</td>
                 <td>${post.username}</td>
                 <td>${new Date(post.createdAt).toLocaleString()}</td>
             `;
-            tableBody.appendChild(row);
-        });
+    });
 
-        // Append table body to table
-        table.appendChild(tableBody);
 
-        // Append table to postsContainer
-        postsContainer.appendChild(table);
-    } else {
-        console.error('Posts container element not found.');
-    }
 }
 
 
