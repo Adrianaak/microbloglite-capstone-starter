@@ -3,54 +3,57 @@
 "use strict";
 
 window.onload = () => {
-
-    getPosts();
-
     getPostsAsync();
-
-}
-
-
-const getPosts = () => {
-
-    const loginData = getLoginData();
-
-    fetch("http://microbloglite.us-east-2.elasticbeanstalk.com/api/posts", {
-        method: "GET",
-        headers: {
-            // This header is how we authenticate our user with the
-            // server for any API requests which require the user
-            // to be logged-in in order to have access.
-            // In the API docs, these endpoints display a lock icon.
-            Authorization: `Bearer ${loginData.token}`
-        }
-    })
-        .then((response) => response.json())
-        .then((data) => {
-            //do something with the posts
-            console.log(data, "Using Promises")
-        })
-
 }
 
 const getPostsAsync = async () => {
+    try {
+        const loginData = await getLoginData(); // Wait for login data asynchronously
 
-    const loginData = getLoginData();
+        const response = await fetch("https://microbloglite.us-east-2.elasticbeanstalk.com/api/posts", {
+            method: "GET",
+            headers: {
+                Authorization: `Bearer ${loginData.token}`
+            }
+        });
 
-    const response = await fetch("http://microbloglite.us-east-2.elasticbeanstalk.com/api/posts", {
-        method: "GET",
-        headers: {
-            // This header is how we authenticate our user with the
-            // server for any API requests which require the user
-            // to be logged-in in order to have access.
-            // In the API docs, these endpoints display a lock icon.
-            Authorization: `Bearer ${loginData.token}`
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
         }
-    })
 
-    const data = await response.json();
+        const posts = await response.json();
+        displayPosts(posts); // Display posts 
+    } catch (error) {
+        console.error('Error fetching posts:', error);
+        // Handle the error appropriately, e.g., show an error message to the user
+    }
+}
 
-    //do something with the posts
-    console.log(data, "using async/await")
+const getLoginInfo = async () => {
+    // Simulate an asynchronous operation to retrieve login data (replace with actual implementation)
+    return new Promise((resolve, reject) => {
+        setTimeout(() => {
+            resolve({ token: localStorage.getItem('token') }); // Retrieve token from localStorage
+        }, 1000); // Simulating a delay of 1 second (replace with actual implementation)
+    });
+}
 
-} 
+const displayPosts = (posts) => {
+     let postsContainer = document.getElementById('postsContainer');
+    if (postsContainer) {
+        posts.forEach(post => {
+            let postElement = document.createElement('div');
+            postElement.classList.add('card', 'mb-3');
+            postElement.innerHTML = `
+                <div class="card-body">
+                    <h5 class="card-title">${post.title}</h5>
+                    <p class="card-text">${post.content}</p>
+                </div>
+            `;
+            postsContainer.appendChild(postElement);
+        });
+    } else {
+        console.error('Posts container element not found.');
+    }
+}
+

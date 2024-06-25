@@ -1,46 +1,42 @@
 "use strict"
 
-// Function to handle form submission
-function handleRegistration(event) {
-    event.preventDefault(); // Prevent the form from submitting
+const registrationForm = document.getElementById('registrationForm');
 
-    // Get form data
-    const formData = new FormData(document.getElementById('registration-form'));
-    const userData = {
-        username: formData.get('username'),
-        fullName: formData.get('fullName'),
-        password: formData.get('password')
-    };
+registrationForm.addEventListener('submit', function(event) {
+  event.preventDefault();
 
-    // Example: Handle multiple users (could be replaced with actual backend logic)
-    const users = [
-        {
-            username: "adrianaak",
-            fullName: "Adriana Kendricks",
-            password: "password24"
-        },
-        {
-            username: "john_doe",
-            fullName: "John Doe",
-            password: "johns_password"
-        },
-        {
-            username: "alice_smith",
-            fullName: "Alice Smith",
-            password: "alices_password"
-        },
-        userData // New user data from form
-    ];
+  const username = document.getElementById('username').value;
+  const fullName = document.getElementById('fullName').value;
+  const password = document.getElementById('password').value;
+  
 
-    console.log(users); // Output users array (for testing)
+  registerUser(username, fullName, password);
+});
 
-    // Here you can handle further processing such as sending data to a backend server
-    // For now, we'll just log a message
-    alert('Registration Successful! Check console for details.'); 
+function registerUser(username, fullName, password) {
+  const url = 'http://microbloglite.us-east-2.elasticbeanstalk.com/api/users';
 
-    // Clear the form fields after submission (optional)
-    document.getElementById('registration-form').reset();
+  fetch(url, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({ username, fullName, password })
+  })
+  .then(response => {
+    if (!response.ok) {
+      throw new Error('Network response was not ok');
+    }
+    return response.json();
+  })
+  .then(data => {
+    console.log('Registration successful:', data);
+    alert('Registration successful! Please login with your credentials.');
+    // Redirect to login page
+    window.location.href = '/'; 
+  })
+  .catch(error => {
+    console.error('Error registering user:', error);
+    alert('Registration failed. Please try again.');
+  });
 }
-
-// Event listener for form submission
-document.getElementById('registration-form').addEventListener('submit', handleRegistration);
