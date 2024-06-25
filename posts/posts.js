@@ -1,59 +1,88 @@
 /* Posts Page JavaScript */
 
-"use strict";
+"use strict"
+
+// Example: Define api in your script
+const api = "http://microbloglite.us-east-2.elasticbeanstalk.com";
+
 
 window.onload = () => {
-    getPostsAsync();
+    getAllPosts();
 }
 
-const getPostsAsync = async () => {
-    try {
-        const loginData = await getLoginData(); // Wait for login data asynchronously
+// Function to get all posts via fetch()
+function getAllPosts() {
+    const loginData = getLoginData();
+    const options = {
+        method: "GET",
+        headers: {
+            Authorization: `Bearer ${loginData.token}`,
+        },
+    };
 
-        const response = await fetch("https://microbloglite.us-east-2.elasticbeanstalk.com/api/posts", {
-            method: "GET",
-            headers: {
-                Authorization: `Bearer ${loginData.token}`
+    fetch(api + "/api/posts", options)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
             }
+            return response.json();
+        })
+        .then(posts => {
+            // Do something with the posts array...
+            console.log(posts);
+            // Example: displayPosts(posts);
+        })
+        .catch(error => {
+            console.error('Error fetching posts:', error);
+            // Handle the error appropriately, e.g., show an error message to the user
+            alert('Failed to fetch posts. Please try again later.');
         });
-
-        if (!response.ok) {
-            throw new Error(`HTTP error! Status: ${response.status}`);
-        }
-
-        const posts = await response.json();
-        displayPosts(posts); // Display posts 
-    } catch (error) {
-        console.error('Error fetching posts:', error);
-        // Handle the error appropriately, e.g., show an error message to the user
-    }
-}
-
-const getLoginInfo = async () => {
-    // Simulate an asynchronous operation to retrieve login data (replace with actual implementation)
-    return new Promise((resolve, reject) => {
-        setTimeout(() => {
-            resolve({ token: localStorage.getItem('token') }); // Retrieve token from localStorage
-        }, 1000); // Simulating a delay of 1 second (replace with actual implementation)
-    });
 }
 
 const displayPosts = (posts) => {
-     let postsContainer = document.getElementById('postsContainer');
+    let postsContainer = document.getElementById('postsContainer');
     if (postsContainer) {
+        // Clear existing content
+        postsContainer.innerHTML = '';
+
+        // Create table element
+        let table = document.createElement('table');
+        table.classList.add('table', 'table-striped');
+
+        // Create table header row
+        let headerRow = document.createElement('thead');
+        headerRow.innerHTML = `
+            <tr>
+                <th>ID</th>
+                <th>Post ID</th>
+                <th>Username</th>
+                <th>Created At</th>
+            </tr>
+        `;
+        table.appendChild(headerRow);
+
+        // Create table body
+        let tableBody = document.createElement('tbody');
         posts.forEach(post => {
-            let postElement = document.createElement('div');
-            postElement.classList.add('card', 'mb-3');
-            postElement.innerHTML = `
-                <div class="card-body">
-                    <h5 class="card-title">${post.title}</h5>
-                    <p class="card-text">${post.content}</p>
-                </div>
+            let row = document.createElement('tr');
+            row.innerHTML = `
+                <td>${post.id}</td>
+                <td>${post.postId}</td>
+                <td>${post.username}</td>
+                <td>${new Date(post.createdAt).toLocaleString()}</td>
             `;
-            postsContainer.appendChild(postElement);
+            tableBody.appendChild(row);
         });
+
+        // Append table body to table
+        table.appendChild(tableBody);
+
+        // Append table to postsContainer
+        postsContainer.appendChild(table);
     } else {
         console.error('Posts container element not found.');
     }
 }
+
+
 
