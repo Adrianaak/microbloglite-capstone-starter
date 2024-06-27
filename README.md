@@ -4,12 +4,15 @@ TinyTalks is a simple microblogging platform designed to share short posts with 
 #Features
 
 ![image](https://github.com/Adrianaak/microbloglite-capstone-starter/assets/166642635/b796896e-876c-4d59-8892-6627a6a30618)
+![image](https://github.com/Adrianaak/microbloglite-capstone-starter/assets/166642635/02f13e0e-d0dd-49b1-82b7-ca38fb9eb335)
 
 
 User Authentication: Secure login and registration system using authentication tokens.
 Post Creation: Users can create new posts with text content.
 Post Interaction: Like and comment functionalities on posts.
 Profile Management: Users can view and update their profiles.
+![image](https://github.com/Adrianaak/microbloglite-capstone-starter/assets/166642635/62af205d-81ab-4d4e-9411-472f909eccea)
+
 ![image](https://github.com/Adrianaak/microbloglite-capstone-starter/assets/166642635/043e0814-2de5-411a-946f-1ef6f37e406b)
 
 Responsive Design: Mobile-friendly interface for seamless usage on all devices.
